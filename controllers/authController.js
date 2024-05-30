@@ -174,7 +174,7 @@ exports.forgatePassword = catchAsync(async (req, res, next) => {
   });
 
   res.status(200).json({
-    status: "Success",
+    status: "success",
     apiFor: "forgatePassword",
     user,
     resetToken,
@@ -219,5 +219,3 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     apiFor: "resetPassword",
   });
 });
-
-//

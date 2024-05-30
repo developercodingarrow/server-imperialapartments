@@ -9,13 +9,13 @@ const DB = process.env.DATABASEURL.replace(
   process.env.DATABASE_PASSWORD
 );
 mongoose
-  .connect(DB, {})
+  .connect(DB)
   .then((con) => {
     console.log("DB connection sucessful...!");
     console.log(process.env.NODE_ENV);
   })
   .catch((err) => {
-    console.log("error");
+    console.log("error DB Conetion... failed");
     console.log(err);
   });
 
