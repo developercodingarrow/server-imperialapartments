@@ -89,6 +89,27 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
+// check password is correct
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+// pass changetAt pass is chnaged or not after ishued token
+userSchema.methods.changePasswordAfterToken = function (JWTTimestamp) {
+  if (this.passwordChangeAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangeAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

@@ -1,9 +1,11 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const User = require("../models/userModel");
 const sendEmail = require("../utils/email");
+const { promisify } = require("util");
 
 // Create Simple OTP and encryptedOtp
 const HashOTP = async () => {
@@ -27,6 +29,13 @@ const OtpURL = () => {
     UrlToken,
     hashedToken,
   };
+};
+
+// jwt tooken function
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: 36000,
+  });
 };
 
 // User Registration
@@ -219,3 +228,85 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     apiFor: "resetPassword",
   });
 });
+
+// User Login
+exports.userLogin = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
+  // check input filed isEmpity
+  if (!email || !password) {
+    return next(new AppError("please provide the mendatories fileds"));
+  }
+
+  // Check the user by email and get password also
+  const user = await User.findOne({ email: email, isVerified: true }).select(
+    "+password"
+  );
+  // check password
+  if (!user || !(await user.correctPassword(password, user.password))) {
+    return next(new AppError("Incorect email or password", 401));
+  }
+  const token = signToken(user._id);
+
+  res.status(200).json({
+    status: "success",
+    apiFor: "Login",
+    token,
+    message: "login successfully",
+    user,
+  });
+});
+
+// Protect Route Function
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Getting token and
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  if (!token) {
+    return next(new AppError("Your are not logIn Please login to acces"), 401);
+  }
+
+  // 2) Verifing Tooken
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3) check if user exist means after token is user or delete user
+  // id comes from jwt payload
+  const freshUser = await User.findById(decoded.id);
+
+  if (!freshUser) {
+    return next(
+      new AppError("The User token does not blonging to this user", 401)
+    );
+  }
+  // 4) check if user changed password after the token was issued
+  if (freshUser.changePasswordAfterToken(decoded.iat)) {
+    return next(
+      new AppError("user recently change password! please log in again", 401)
+    );
+  }
+  // Grant acces to Protected Route
+
+  req.user = freshUser;
+  next();
+});
+
+// all to acces user Role
+exports.restricTO = (...roles) => {
+  return (req, res, next) => {
+    // roles in Array
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError("You do not have permission to acces this", 403)
+      );
+    }
+
+    next();
+  };
+};
