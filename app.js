@@ -7,7 +7,12 @@ const BlogCategorieRoute = require("./routes/blogCateroriesRoute");
 const BlogRouter = require("./routes/blogRouter");
 
 // Midelwears
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Allow requests from any origin
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use("/api/v1/imperialapartments/auth", authRoute);

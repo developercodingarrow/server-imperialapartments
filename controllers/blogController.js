@@ -53,3 +53,48 @@ exports.updateBlogTag = catchAsync(async (req, res, next) => {
     result: blog,
   });
 });
+
+exports.updateBlogCategories = catchAsync(async (req, res, next) => {
+  const { _id } = req.params;
+  console.log(req.body);
+  const { category } = req.body;
+
+  console.log("category");
+
+  const blog = await Blogs.findById(_id);
+
+  if (!blog) {
+    return next(new AppError("Blog post not found"));
+  }
+
+  if (!Array.isArray(category)) {
+    return next(new AppError("Categories must be an array"));
+  }
+
+  const existingcategory = blog.blogCategories.map((tag) => tag.category);
+
+  const newCategories = [];
+
+  for (let name of category) {
+    if (!existingcategory.includes(name)) {
+      newCategories.push(name);
+    }
+  }
+
+  newCategories.forEach((name) => {
+    blog.blogCategories.push({ category: name });
+  });
+
+  await blog.save();
+
+  res.status(200).json({
+    status: "success",
+    result: blog,
+  });
+});
+
+// UPLOAD BLOG THUMBLIN
+exports.UplodblogThumblin = Factory.updateImageByIdAndField(
+  Blogs,
+  "blogThumblin"
+);

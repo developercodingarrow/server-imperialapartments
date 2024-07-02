@@ -19,7 +19,7 @@ const blogSchema = new mongoose.Schema(
     blogDescreption: {
       type: String,
     },
-    BlogThumblin: {
+    blogThumblin: {
       url: {
         type: String,
         // default: "project-dummy-image.jpg",
@@ -27,12 +27,24 @@ const blogSchema = new mongoose.Schema(
       altText: {
         type: String,
       },
+      alternativeText: {
+        type: String,
+      },
+      title: {
+        type: String,
+      },
+      caption: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
     },
 
     blogTags: [
       {
-        tagName: { type: String },
-        tagSlug: { type: String },
+        tagName: { type: String, lowercase: true },
+        tagSlug: { type: String, lowercase: true },
       },
     ],
 
@@ -40,9 +52,11 @@ const blogSchema = new mongoose.Schema(
       {
         category: {
           type: String,
+          lowercase: true,
         },
         slug: {
           type: String,
+          lowercase: true,
         },
       },
     ],

@@ -13,6 +13,7 @@ const blogCategoriesSchema = new mongoose.Schema(
       type: String,
       require: [true, "slug didn't work"],
       unique: true,
+      lowercase: true,
     },
   },
   { timestamps: true }

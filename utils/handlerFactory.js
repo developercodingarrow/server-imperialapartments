@@ -107,3 +107,36 @@ exports.getOneByID = (Model) => {
     });
   });
 };
+
+// Generic function to update a document's thumbnail image by slug for any model and field name
+exports.updateImageByIdAndField = (Model, fieldName) => {
+  return catchAsync(async (req, res, next) => {
+    const { alternativeText, title, caption, description } = req.body;
+    const image = req.files[0].filename;
+    console.log(req.files);
+    const id = req.params._id;
+    // Create an object with the dynamically provided field name
+    const updateObject = {
+      [fieldName]: {
+        url: image,
+        altText: req.files[0].originalname,
+        alternativeText,
+        title,
+        caption,
+        description,
+      },
+    };
+    // Find and update the document based on the provided slug
+    const data = await Model.findByIdAndUpdate(id, updateObject, {
+      new: true,
+      upsert: true,
+    });
+
+    // Respond with a success message and the updated data
+    return res.status(200).json({
+      status: "success",
+      message: `${fieldName} updated successfully`,
+      data,
+    });
+  });
+};
