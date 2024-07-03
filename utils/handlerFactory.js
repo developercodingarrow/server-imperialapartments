@@ -108,6 +108,48 @@ exports.getOneByID = (Model) => {
   });
 };
 
+// This function for Delete one
+exports.deleteOneByBody = (Model) => {
+  return catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndDelete(req.body._id);
+
+    if (!doc) {
+      return next(new AppError("NO Document found with this ID", 404));
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        data: doc,
+      },
+    });
+  });
+};
+
+// Togle Blooen filed
+exports.toggleBooleanField = (Model, fieldName) => {
+  return catchAsync(async (req, res, next) => {
+    const doc = await Model.findById(req.body._id);
+
+    if (!doc) {
+      return next(new AppError("No document found with this ID", 404));
+    }
+
+    // Toggle the boolean field
+    doc[fieldName] = !doc[fieldName];
+
+    // Save the updated document
+    await doc.save();
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        [fieldName]: doc[fieldName],
+      },
+    });
+  });
+};
+
 // Generic function to update a document's thumbnail image by slug for any model and field name
 exports.updateImageByIdAndField = (Model, fieldName) => {
   return catchAsync(async (req, res, next) => {

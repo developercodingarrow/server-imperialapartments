@@ -18,9 +18,10 @@ router.get("/get-single-blog/:slug", blogController.getSingleBlog);
 // 4) Update Single Blog
 router.patch("/update-single-blog/:id", blogController.updateSingleBolg);
 
-// 5)
+// 5) UPDATE BLOG TAGS
 router.post("/update-blog-tags/:_id", blogController.updateBlogTag);
-//  6)
+
+//  6) Update Blog Categories
 router.post(
   "/update-blog-categories/:_id",
   blogController.updateBlogCategories
@@ -31,5 +32,9 @@ router.patch(
   blogThumblinMidelwear,
   blogController.UplodblogThumblin
 );
+
+router.delete("/delete-single-blog", blogController.deleteSingleBlog);
+
+router.post("/is-feaured-blog", blogController.isFeaturedBlog);
 
 module.exports = router;

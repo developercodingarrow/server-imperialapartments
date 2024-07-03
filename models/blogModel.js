@@ -63,6 +63,12 @@ const blogSchema = new mongoose.Schema(
     keywords: {
       type: String,
     },
+
+    featured: {
+      type: Boolean,
+      enum: [false, true],
+      default: false,
+    },
   },
   { timestamps: true }
 );

@@ -15,6 +15,12 @@ exports.allBlog = Factory.getAll(Blogs);
 // 4) GET BLOG BY ID
 exports.getSingleBlog = Factory.getOneByID(Blogs);
 
+// 5) DELETE SINGLE BLOG
+exports.deleteSingleBlog = Factory.deleteOneByBody(Blogs);
+
+//  6) Toggle Blog Features
+exports.isFeaturedBlog = Factory.toggleBooleanField(Blogs, "featured");
+
 exports.updateBlogTag = catchAsync(async (req, res, next) => {
   const { _id } = req.params;
   console.log(req.body);
