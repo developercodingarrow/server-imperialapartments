@@ -50,3 +50,17 @@ const blogThumbilUpload = createMulterUpload(
 );
 
 exports.blogThumblinMidelwear = blogThumbilUpload;
+
+// Project Thumblin Storage
+const ProjecthumblinStorage = createMulterStorage(
+  `${__dirname}/../../web-frontend/public/projectthublin`,
+  "project-thumblin"
+);
+
+const projectThumbilUpload = createMulterUpload(
+  ProjecthumblinStorage,
+  "ProjectThumblin",
+  true
+);
+
+exports.projectThumblinMidelwear = projectThumbilUpload;
