@@ -7,6 +7,7 @@ const BlogCategorieRoute = require("./routes/blogCateroriesRoute");
 const BlogRouter = require("./routes/blogRouter");
 const EnquireRoute = require("./routes/enquireRoute");
 const ProjectRoute = require("./routes/projectRoute");
+const RoomTypeRouter = require("./routes/roomTypeRouter");
 
 // Midelwears
 app.use(
@@ -23,5 +24,6 @@ app.use("/api/v1/imperialapartments/blog-categories", BlogCategorieRoute);
 app.use("/api/v1/imperialapartments/blog", BlogRouter);
 app.use("/api/v1/imperialapartments/enquire", EnquireRoute);
 app.use("/api/v1/imperialapartments/project", ProjectRoute);
+app.use("/api/v1/imperialapartments/room-type", RoomTypeRouter);
 
 module.exports = app;

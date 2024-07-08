@@ -17,6 +17,10 @@ const projectSchema = new mongoose.Schema(
       require: [true, "price is Required!"],
     },
 
+    roomTypes: {
+      type: String,
+    },
+
     overview: {
       type: String,
     },
