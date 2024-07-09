@@ -49,7 +49,9 @@ exports.deleteOneByBody = (Model) => {
 // This function for Update one
 exports.updateOneByParam = (Model) => {
   return catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+    console.log(req.body);
+    const updateData = req.body.data || req.body;
+    const doc = await Model.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });
@@ -58,7 +60,7 @@ exports.updateOneByParam = (Model) => {
       return next(new AppError("NO Document found with this ID", 404));
     }
 
-    res.status(201).json({
+    res.status(204).json({
       status: "success",
       result: doc,
     });

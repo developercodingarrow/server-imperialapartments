@@ -11,7 +11,12 @@ router.get("/fillter-projects", projectController.fillterProjects);
 router.use(AuthController.protect, AuthController.restricTO("user"));
 router.post("/create-new-project", projectController.createProject);
 router.get("/get-all-projects", projectController.getAllProjects);
+router.get("/get-single-project/:slug", projectController.getSingleProject);
 router.post("/is-feaured-blog", projectController.isFeaturedProject);
+router.patch(
+  "/update-single-project/:id",
+  projectController.updateSingleProject
+);
 router.patch(
   "/update-project-thumblin/:_id",
   projectThumblinMidelwear,

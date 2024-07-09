@@ -15,6 +15,12 @@ exports.getAllProjects = Factory.getAll(Projects);
 //  4) Toggle Blog Features
 exports.isFeaturedProject = Factory.toggleBooleanField(Projects, "featured");
 
+// 5) GET BLOG BY ID
+exports.getSingleProject = Factory.getOneByID(Projects);
+
+// 6) UPDATE new Blog
+exports.updateSingleProject = Factory.updateOneByParam(Projects);
+
 // UPLOAD BLOG THUMBLIN
 exports.UplodProjectThumblin = Factory.updateImageByIdAndField(
   Projects,

@@ -25,7 +25,7 @@ const projectSchema = new mongoose.Schema(
       type: String,
     },
 
-    projectContent: {
+    content: {
       type: String,
     },
 

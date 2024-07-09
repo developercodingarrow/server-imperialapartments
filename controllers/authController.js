@@ -100,7 +100,7 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
       email: email,
       subject: "User Registration",
       message: `<h1>This is your one Time  (OTP) ${otp} for registration please use OTP <h1> <br>
-                click on this Link ${otpverificationURL} and Verify the OTP`,
+                click on this Link  and Verify the OTP`,
     });
 
     res.status(200).json({
