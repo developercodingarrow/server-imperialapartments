@@ -104,7 +104,7 @@ exports.userRegisteraion = catchAsync(async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "Success",
+      status: "success",
       apiFor: "register",
       otp,
       UrlToken,
@@ -142,7 +142,7 @@ exports.verifyOtp = catchAsync(async (req, res, next) => {
     await user.save();
 
     res.status(200).json({
-      status: "Success",
+      status: "success",
       apiFor: "opt-verification",
       message: "your Registration sucesfully",
     });
@@ -223,7 +223,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   res.status(200).json({
-    status: "Success",
+    status: "success",
     message: "your password Reset sucesfully",
     apiFor: "resetPassword",
   });

@@ -50,6 +50,31 @@ const projectSchema = new mongoose.Schema(
         type: String,
       },
     },
+
+    ProjectGallery: [
+      {
+        url: {
+          type: String,
+          default: "project-dummy-image.jpg",
+        },
+        altText: {
+          type: String,
+          default: "project-cover-image",
+        },
+        alternativeText: {
+          type: String,
+        },
+        title: {
+          type: String,
+        },
+        caption: {
+          type: String,
+        },
+        description: {
+          type: String,
+        },
+      },
+    ],
     featured: {
       type: Boolean,
       enum: [false, true],

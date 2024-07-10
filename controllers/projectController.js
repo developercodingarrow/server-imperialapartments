@@ -27,6 +27,12 @@ exports.UplodProjectThumblin = Factory.updateImageByIdAndField(
   "ProjectThumblin"
 );
 
+// UPLOAD Project Gallery
+exports.UplodProjectGallery = Factory.updateGalleyByIdAndField(
+  Projects,
+  "ProjectGallery"
+);
+
 function buildFilter(queryObj) {
   let filter = {};
 

@@ -184,3 +184,58 @@ exports.updateImageByIdAndField = (Model, fieldName) => {
     });
   });
 };
+
+// Generic function to update a document's Gallery
+exports.updateGalleyByIdAndField = (Model, fieldName) => {
+  return catchAsync(async (req, res, next) => {
+    const { alternativeText, title, caption, description } = req.body;
+    const images = req.files;
+    const id = req.params._id;
+
+    console.log("alternativeText---", alternativeText);
+    console.log("title---", title);
+    console.log("caption---", caption);
+    console.log("description---", description);
+
+    const project = await Model.findById(id);
+
+    if (!project) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Project not found" });
+    }
+
+    // Prepare image data to push into ProjectGallery array
+    const imageDataArray = images.map((image, index) => {
+      const imageData = {
+        url: image.path,
+        altText: image.originalname,
+        alternativeText: alternativeText[index], // Assuming alternativeText is an array
+        title: title[index],
+        caption: caption[index],
+        description: description[index],
+      };
+      console.log("Image Data:", imageData); // Console log each image data
+      return imageData;
+    });
+
+    // Push all images into ProjectGallery
+    project[fieldName].push(...imageDataArray);
+
+    // Save updated project
+    const updatedProject = await project.save();
+
+    // Find and update the document based on the provided slug
+    const data = await Model.findByIdAndUpdate(id, updatedProject, {
+      new: true,
+      upsert: true,
+    });
+
+    // Respond with a success message and the updated data
+    return res.status(200).json({
+      status: "success",
+      message: `${fieldName} updated successfully`,
+      data,
+    });
+  });
+};

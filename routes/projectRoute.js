@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const AuthController = require("../controllers/authController");
 const projectController = require("../controllers/projectController");
-const { projectThumblinMidelwear } = require("../utils/multerUploadMiddleware");
+const {
+  projectThumblinMidelwear,
+  projectGalleryMidelwear,
+} = require("../utils/multerUploadMiddleware");
 
 // SSR API
 router.get("/all-listing", projectController.allListing);
@@ -21,6 +24,12 @@ router.patch(
   "/update-project-thumblin/:_id",
   projectThumblinMidelwear,
   projectController.UplodProjectThumblin
+);
+
+router.post(
+  "/update-project-gallery/:_id",
+  projectGalleryMidelwear,
+  projectController.UplodProjectGallery
 );
 
 module.exports = router;

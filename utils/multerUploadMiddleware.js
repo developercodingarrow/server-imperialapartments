@@ -20,7 +20,7 @@ const createMulterUpload = (
   storage,
   fieldName,
   isMultiple = true,
-  maxCount = 1
+  maxCount = 10
 ) => {
   const upload = isMultiple
     ? multer({ storage: storage }).array(fieldName, maxCount)
@@ -30,7 +30,7 @@ const createMulterUpload = (
     upload(req, res, (err) => {
       if (err) {
         console.error("Multer Error:", err); // Log any multer-related errors
-        return res.status(400).send("File upload error");
+        return res.status(400).send("File upload error....");
       }
       next();
     });
@@ -64,3 +64,17 @@ const projectThumbilUpload = createMulterUpload(
 );
 
 exports.projectThumblinMidelwear = projectThumbilUpload;
+
+// Project Gallery projectGalley
+const projectGalleryStorage = createMulterStorage(
+  `${__dirname}/../../web-frontend/public/projectGalley`,
+  "Project-gallery"
+);
+
+const projectGalleryUpload = createMulterUpload(
+  projectGalleryStorage,
+  "projectGalley",
+  true
+);
+
+exports.projectGalleryMidelwear = projectGalleryUpload;
