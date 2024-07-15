@@ -2,6 +2,7 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const Projects = require("../models/projectModel");
 const Factory = require("../utils/handlerFactory");
+const FAQ = require("../models/ProjectFAQModel");
 
 // 1) Create Project for Client (SSR Rendering)
 exports.allListing = Factory.getAll(Projects);
@@ -17,15 +18,24 @@ exports.isFeaturedProject = Factory.toggleBooleanField(Projects, "featured");
 
 // 5) GET BLOG BY ID
 exports.getSingleProject = Factory.getOneByID(Projects);
+// 6) DELETE SINGLE PROJECT
+exports.deleteSingleProject = Factory.deleteOneByBody(Projects);
 
 // 6) UPDATE new Blog
 exports.updateSingleProject = Factory.updateOneByParam(Projects);
+
+exports.createProjectFAQ = Factory.creatchildreferencing(Projects, FAQ, "faqs");
 
 // UPLOAD BLOG THUMBLIN
 exports.UplodProjectThumblin = Factory.updateImageByIdAndField(
   Projects,
   "ProjectThumblin"
 );
+
+exports.upadteGallerySingleImageFiled =
+  Factory.updateSingleImageDataGallery(Projects);
+
+exports.deleteImageFromGallery = Factory.deleteImageFromGallery(Projects);
 
 // UPLOAD Project Gallery
 exports.UplodProjectGallery = Factory.updateGalleyByIdAndField(

@@ -2,6 +2,7 @@ const fs = require("fs").promises;
 const path = require("path");
 const catchAsync = require("./catchAsync");
 const AppError = require("./appError");
+const { Module } = require("module");
 
 // This function for CRETE one
 exports.createOne = (Model) => {
@@ -190,8 +191,9 @@ exports.updateGalleyByIdAndField = (Model, fieldName) => {
   return catchAsync(async (req, res, next) => {
     const { alternativeText, title, caption, description } = req.body;
     const images = req.files;
-    const id = req.params._id;
 
+    const id = req.params._id;
+    console.log(images);
     console.log("alternativeText---", alternativeText);
     console.log("title---", title);
     console.log("caption---", caption);
@@ -208,7 +210,7 @@ exports.updateGalleyByIdAndField = (Model, fieldName) => {
     // Prepare image data to push into ProjectGallery array
     const imageDataArray = images.map((image, index) => {
       const imageData = {
-        url: image.path,
+        url: image.filename,
         altText: image.originalname,
         alternativeText: alternativeText[index], // Assuming alternativeText is an array
         title: title[index],
@@ -236,6 +238,119 @@ exports.updateGalleyByIdAndField = (Model, fieldName) => {
       status: "success",
       message: `${fieldName} updated successfully`,
       data,
+    });
+  });
+};
+
+exports.updateSingleImageDataGallery = (Model) => {
+  return catchAsync(async (req, res, next) => {
+    const { alternativeText, title, caption, description, imageId } = req.body;
+    const id = req.params._id;
+    const project = await Model.findById(id);
+
+    if (!project) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Project not found" });
+    }
+
+    const imageIndex = project.ProjectGallery.findIndex(
+      (image) => image._id.toString() === imageId
+    );
+
+    if (imageIndex === -1) {
+      return res.status(404).json({
+        status: "error",
+        message: "Image not found in project gallery",
+      });
+    }
+
+    // Update only the necessary fields
+    if (alternativeText)
+      project.ProjectGallery[imageIndex].alternativeText = alternativeText;
+    if (title) project.ProjectGallery[imageIndex].title = title;
+    if (caption) project.ProjectGallery[imageIndex].caption = caption;
+    if (description)
+      project.ProjectGallery[imageIndex].description = description;
+
+    await project.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Image updated successfully",
+      data: project.ProjectGallery[imageIndex],
+    });
+  });
+};
+
+exports.deleteImageFromGallery = (Model) => {
+  return catchAsync(async (req, res, next) => {
+    const { _id } = req.params;
+    const { imageId } = req.body;
+    console.log(imageId);
+
+    const project = await Model.findById(_id);
+
+    if (!project) {
+      return res
+        .status(404)
+        .json({ status: "error", message: "Project not found" });
+    }
+
+    const imageIndex = project.ProjectGallery.findIndex(
+      (image) => image._id.toString() === imageId
+    );
+
+    if (imageIndex === -1) {
+      return res.status(404).json({
+        status: "error",
+        message: "Image not found in project gallery",
+      });
+    }
+
+    // Remove the image from the gallery array
+    project.ProjectGallery.splice(imageIndex, 1);
+
+    await project.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Image deleted successfully",
+    });
+  });
+};
+
+// This function for CRETE one
+exports.creatchildreferencing = (ReferenceModel, Model, filed) => {
+  return catchAsync(async (req, res, next) => {
+    console.log(req.body);
+    const _id = req.params._id;
+    const data = req.body;
+    console.log(data);
+
+    // Check if faqData is an array, if not, make it an array
+    const faqs = Array.isArray(data) ? data : [data];
+
+    // Create and save all FAQ documents
+    const createdFAQs = await Model.insertMany(faqs);
+
+    // Get the IDs of the created FAQs
+    const faqIds = createdFAQs.map((faq) => faq._id);
+
+    // Find the reference model document by ID and update the reference field
+    const doc = await ReferenceModel.findById(_id);
+
+    if (!doc) {
+      return next(new Error("Reference document not found"));
+    }
+
+    // Update the reference field by pushing the new FAQ IDs into the array
+    doc[filed].push(...faqIds);
+    await doc.save();
+
+    res.status(201).json({
+      status: "success",
+      result: doc,
     });
   });
 };

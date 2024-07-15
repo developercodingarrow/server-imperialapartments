@@ -80,6 +80,12 @@ const projectSchema = new mongoose.Schema(
       enum: [false, true],
       default: false,
     },
+    faqs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FAQ",
+      },
+    ],
   },
   { timestamps: true }
 );
